@@ -4,14 +4,23 @@ import assert from "node:assert/strict";
 import {
   buildRow,
   formatTimestamp,
+  getProduct,
   getScripts,
   logOrder,
   validateOrder,
   ValidationError,
 } from "../src/orders.js";
 
-test("getScripts returns four script options", () => {
-  assert.equal(getScripts().length, 4);
+test("getScripts returns three current products with features", () => {
+  const scripts = getScripts();
+  assert.equal(scripts.length, 3);
+  assert.equal(scripts[0].name, "sundown_syncobject");
+  assert.equal(scripts[0].price, 1000);
+  assert.ok(scripts[0].features.includes("ไม่ใช้ Network Object"));
+});
+
+test("getProduct returns product metadata", () => {
+  assert.equal(getProduct("sundown_deleteobj").description, "ลบแฟชั่นลอย ออโต้");
 });
 
 test("validateOrder rejects missing discord", () => {
@@ -19,19 +28,19 @@ test("validateOrder rejects missing discord", () => {
     () =>
       validateOrder({
         discord: "",
-        script: "HUD Script",
+        script: "sundown_syncobject",
         details: "ESX",
       }),
     ValidationError,
   );
 });
 
-test("validateOrder rejects invalid script", () => {
+test("validateOrder rejects old or invalid script", () => {
   assert.throws(
     () =>
       validateOrder({
         discord: "demo#1234",
-        script: "Custom Script",
+        script: "HUD Script",
         details: "ESX",
       }),
     ValidationError,
@@ -43,25 +52,25 @@ test("validateOrder rejects missing details", () => {
     () =>
       validateOrder({
         discord: "demo#1234",
-        script: "HUD Script",
+        script: "sundown_syncobject",
         details: "",
       }),
     ValidationError,
   );
 });
 
-test("buildRow includes timestamp, price, and status", () => {
+test("buildRow includes timestamp, new product price, and status", () => {
   const order = validateOrder({
     discord: " demo#1234 ",
-    script: "HUD Script",
+    script: "sundown_deleteobj",
     details: " ESX ",
   });
 
   assert.deepEqual(buildRow(order, "2026-05-26 12:00:00"), [
     "2026-05-26 12:00:00",
     "demo#1234",
-    "HUD Script",
-    590,
+    "sundown_deleteobj",
+    1200,
     "ESX",
     "new",
   ]);
@@ -91,7 +100,7 @@ test("logOrder appends to sheets and sends Telegram message", async () => {
   const result = await logOrder({
     input: {
       discord: "demo#1234",
-      script: "Job Script",
+      script: "sundown_discordjob",
       details: "QBCore",
     },
     sheets,
@@ -104,12 +113,13 @@ test("logOrder appends to sheets and sends Telegram message", async () => {
   assert.deepEqual(calls[0].requestBody.values[0], [
     "2026-05-26 12:00:00",
     "demo#1234",
-    "Job Script",
-    990,
+    "sundown_discordjob",
+    500,
     "QBCore",
     "new",
   ]);
-  assert.match(messages[0], /Job Script/);
+  assert.match(messages[0], /sundown_discordjob/);
+  assert.match(messages[0], /ระบบเพิ่มยศใน Discord/);
 
   if (previousSheetId === undefined) {
     delete process.env.GOOGLE_SHEETS_ID;

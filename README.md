@@ -7,51 +7,49 @@ script assistant.
 
 - Chat assistant that answers from `knowledge/sundown_kb.txt`
 - Gemini chat generation with `@google/genai`
-- Gemini embeddings with in-memory cosine search for the knowledge base
-- Static HTML/CSS/JS UI for chat and script orders
-- Order logging to Google Sheets
-- Telegram notification for new orders
-- CLI caption generator
-- CLI action parser for submitting script orders
-- CLI morning sales report to Telegram
+- Gemini embeddings with in-memory cosine search
+- Static HTML/CSS/JS UI with Light/Dark theme
+- Product order form with price and feature preview
+- Google Sheets order logging
+- Telegram order notifications
+- CLI caption generator, order agent, and morning report
+
+## Products
+
+- `sundown_syncobject` ราคา 1,000 บาท: ระบบจัดการแฟชั่นที่ดีที่สุด
+- `sundown_discordjob` ราคา 500 บาท: ระบบเพิ่มยศใน Discord ตาม Job ในเซิฟ
+- `sundown_deleteobj` ราคา 1,200 บาท: ลบแฟชั่นลอย ออโต้
 
 ## Setup
 
-1. Install dependencies.
-
 ```bash
 npm install
-```
-
-2. Create `.env` from `.env.example`.
-
-```bash
 cp .env.example .env
 ```
 
-3. Set environment variables.
+Required environment variables:
 
-- `GOOGLE_API_KEY` for Gemini
-- `GOOGLE_SHEETS_ID` for the Google Sheet that stores orders
-- `GOOGLE_SERVICE_ACCOUNT_FILE` or `GOOGLE_SERVICE_ACCOUNT_JSON` for service account credentials
-- `TELEGRAM_BOT_TOKEN` for the Telegram bot
-- `TELEGRAM_CHAT_ID` for the Telegram recipient
-- `PORT` optional, defaults to `3000`
-- `GEMINI_CHAT_MODEL` optional, defaults to `gemini-2.5-flash`
-- `GEMINI_EMBEDDING_MODEL` optional, defaults to `gemini-embedding-001`
+- `GOOGLE_API_KEY`
+- `GOOGLE_SHEETS_ID`
+- `GOOGLE_SERVICE_ACCOUNT_FILE` or `GOOGLE_SERVICE_ACCOUNT_JSON`
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
+
+Optional environment variables:
+
+- `PORT`, defaults to `3000`
+- `GEMINI_CHAT_MODEL`, defaults to `gemini-2.5-flash`
+- `GEMINI_EMBEDDING_MODEL`, defaults to `gemini-embedding-001`
 
 If your existing `.env` still has `GEMINI_EMBEDDING_MODEL=text-embedding-004`
-or `GEMINI_EMBEDDING_MODEL=gemini-embedding-2`, remove it or change it to
+or `GEMINI_EMBEDDING_MODEL=gemini-embedding-2`, change it to
 `gemini-embedding-001`.
 
-4. Prepare the first row in Google Sheets.
+Prepare the first row in Google Sheets:
 
 ```text
 Timestamp, Discord, Script, Price, Details, Status
 ```
-
-If the first row is empty, the app creates the header automatically on the first
-order submission.
 
 ## Run
 
@@ -63,21 +61,9 @@ Open `http://localhost:3000`.
 
 ## CLI
 
-Generate promotional captions.
-
 ```bash
-npm run caption -- --script "HUD Script" --price "590 บาท"
-```
-
-Run the interactive Demi order agent.
-
-```bash
+npm run caption -- --script "sundown_deleteobj" --price "1,200 บาท"
 npm run agent
-```
-
-Send yesterday's sales report to Telegram.
-
-```bash
 npm run morning-report
 ```
 

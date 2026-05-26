@@ -11,13 +11,49 @@ export const SHEET_HEADERS = [
   "Status",
 ];
 
-export const SCRIPT_PRICES = {
-  "HUD Script": 590,
-  "Job Script": 990,
-  "Shop/Inventory Script": 1290,
-  "Gang/Activity Script": 1590,
-};
+export const PRODUCTS = [
+  {
+    name: "sundown_syncobject",
+    price: 1000,
+    description: "ระบบจัดการแฟชั่นที่ดีที่สุด",
+    features: [
+      "ไม่ใช้ Network Object",
+      "ออกเข้าใหม่แฟชั่นอยู่เหมือนเดิม",
+      "รองรับเอฟเฟคของแฟชั่นทุกชิ้น",
+      "รองรับการใส่แฟชั่นข้ามมิติ",
+      "รองรับการใส่แฟชั่น 1 item ใส่ 2 ชิ้น (jpx link)",
+      "สามารถดึงแฟชั่นของตนเอง ตอน /skin กลับมาใส่ได้เลย (ไม่ต้องกดใช้ใหม่)",
+      "เมื่อกดใช้ แฟชั่น จะมี icon แสดงในกระเป๋า NC",
+    ],
+  },
+  {
+    name: "sundown_discordjob",
+    price: 500,
+    description: "ระบบเพิ่มยศใน Discord ตาม Job ในเซิฟ",
+    features: [
+      "เพิ่มยศใน Discord ตาม Job ในเซิฟให้อัตโนมัติ",
+      "เมื่อ job ถูกเปลี่ยน จะทำการลบยศเก่าทิ้ง และ เปลี่ยนให้ใหม่อัตโนมัติ",
+    ],
+  },
+  {
+    name: "sundown_deleteobj",
+    price: 1200,
+    description: "ลบแฟชั่นลอย ออโต้",
+    features: [
+      "ไม่ต้องใส่ชื่อแฟชั่น(ชื่อโมเดล)",
+      "ลบแฟชั่นลอยออโต้",
+      "ลบ prop ที่โปรเสกออโต้",
+      "config ง่าย",
+      "รองรับ base ทุกเวอร์ชั่น",
+    ],
+  },
+];
 
+export const SCRIPT_PRICES = Object.fromEntries(
+  PRODUCTS.map((product) => [product.name, product.price]),
+);
+
+const PRODUCT_BY_NAME = new Map(PRODUCTS.map((product) => [product.name, product]));
 const SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets";
 
 export class ValidationError extends Error {
@@ -29,20 +65,25 @@ export class ValidationError extends Error {
 }
 
 export function getScripts() {
-  return Object.entries(SCRIPT_PRICES).map(([name, price]) => ({ name, price }));
+  return PRODUCTS.map((product) => ({ ...product, features: [...product.features] }));
+}
+
+export function getProduct(name) {
+  return PRODUCT_BY_NAME.get(name);
 }
 
 export function validateOrder(order) {
   const discord = String(order.discord || "").trim();
   const script = String(order.script || "").trim();
   const details = String(order.details || "").trim();
+  const product = getProduct(script);
 
   if (!discord) {
     throw new ValidationError("กรุณากรอก Discord สำหรับติดต่อกลับ");
   }
 
-  if (!Object.hasOwn(SCRIPT_PRICES, script)) {
-    throw new ValidationError("สคริปต์ที่เลือกไม่ถูกต้อง");
+  if (!product) {
+    throw new ValidationError("สินค้าที่เลือกไม่ถูกต้อง");
   }
 
   if (!details) {
@@ -51,10 +92,11 @@ export function validateOrder(order) {
 
   return {
     discord,
-    script,
+    script: product.name,
     details,
     status: order.status || "new",
-    price: SCRIPT_PRICES[script],
+    price: product.price,
+    product,
   };
 }
 
@@ -164,11 +206,12 @@ export function formatOrderMessage(order, timestamp) {
     "",
     `เวลา: ${timestamp}`,
     `Discord: ${order.discord}`,
-    `Script: ${order.script}`,
+    `สินค้า: ${order.script}`,
+    `รายละเอียดสินค้า: ${order.product?.description || "-"}`,
     `ราคา: ${order.price.toLocaleString("th-TH")} บาท`,
     `สถานะ: ${order.status}`,
     "",
-    "รายละเอียด:",
+    "รายละเอียดจากลูกค้า:",
     order.details,
   ].join("\n");
 }

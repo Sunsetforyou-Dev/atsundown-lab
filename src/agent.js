@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 
 import { CHAT_MODEL } from "./config.js";
 import { generateText } from "./gemini.js";
-import { logOrder } from "./orders.js";
+import { getScripts, logOrder } from "./orders.js";
 
 export const TRACE_FILE = "agent_trace.log";
 
@@ -14,10 +14,7 @@ Use this action format when the user wants to submit a ready-made FiveM script o
 {"action": "submit_script_order", "args": {"discord": "...", "script": "...", "details": "..."}}
 
 Allowed script values:
-- HUD Script
-- Job Script
-- Shop/Inventory Script
-- Gang/Activity Script
+${getScripts().map((product) => `- ${product.name}`).join("\n")}
 
 If the command is not a ready-made script order, return:
 {"action": "unknown", "args": {}}

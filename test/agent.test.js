@@ -1,7 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { parseActionResponse, runAgentCommand } from "../src/agent.js";
+import { parseActionResponse, runAgentCommand, SYSTEM_INSTRUCTION } from "../src/agent.js";
+
+test("SYSTEM_INSTRUCTION lists current product names", () => {
+  assert.match(SYSTEM_INSTRUCTION, /sundown_syncobject/);
+  assert.match(SYSTEM_INSTRUCTION, /sundown_discordjob/);
+  assert.match(SYSTEM_INSTRUCTION, /sundown_deleteobj/);
+  assert.doesNotMatch(SYSTEM_INSTRUCTION, /HUD Script/);
+});
 
 test("parseActionResponse parses raw JSON", () => {
   assert.deepEqual(parseActionResponse('{"action":"unknown","args":{}}'), {
@@ -23,13 +30,13 @@ test("parseActionResponse parses fenced JSON", () => {
 test("runAgentCommand submits script order with mocked Gemini and logger", async () => {
   const traces = [];
   const result = await runAgentCommand({
-    userInput: "สั่ง HUD",
+    userInput: "สั่ง sundown_deleteobj",
     textGenerator: async () =>
       JSON.stringify({
         action: "submit_script_order",
         args: {
           discord: "demo#1234",
-          script: "HUD Script",
+          script: "sundown_deleteobj",
           details: "ESX",
         },
       }),
@@ -38,13 +45,13 @@ test("runAgentCommand submits script order with mocked Gemini and logger", async
       order: {
         discord: input.discord,
         script: input.script,
-        price: 590,
+        price: 1200,
       },
     }),
     traceWriter: async (event, data) => traces.push({ event, data }),
   });
 
-  assert.equal(result, "Order submitted: demo#1234 - HUD Script (590 THB)");
+  assert.equal(result, "Order submitted: demo#1234 - sundown_deleteobj (1,200 THB)");
   assert.equal(traces.at(-1).event, "tool_result");
 });
 

@@ -13,7 +13,13 @@
           <p class="eyebrow">AtSundown For FiveM</p>
           <h1>ผู้ช่วยสั่งซื้อสคริปต์สำเร็จรูป</h1>
         </div>
-        <div class="status-pill" id="serverStatus">Checking</div>
+        <div class="header-actions">
+          <div class="theme-toggle" aria-label="Theme">
+            <button type="button" id="themeLight" data-theme-option="light">Light</button>
+            <button type="button" id="themeDark" data-theme-option="dark">Dark</button>
+          </div>
+          <div class="status-pill" id="serverStatus">Checking</div>
+        </div>
       </header>
 
       <section class="workspace" aria-label="AtSundown assistant">
@@ -27,7 +33,7 @@
               id="chatInput"
               name="message"
               autocomplete="off"
-              placeholder="ถามเรื่องสคริปต์ FiveM, ราคา, การสั่งซื้อ หรือการติดต่อร้าน..."
+              placeholder="ถามเรื่องสินค้า FiveM, ราคา, ฟีเจอร์, การสั่งซื้อ หรือการติดต่อร้าน..."
               required
             />
             <button type="submit">ส่ง</button>
@@ -45,11 +51,15 @@
             </label>
 
             <label>
-              สคริปต์ที่ต้องการซื้อ
+              สินค้าที่ต้องการซื้อ
               <select id="script" name="script" required></select>
             </label>
 
             <div class="price-box" id="priceBox">ราคา: -</div>
+            <div class="feature-box" id="featureBox">
+              <strong>ฟีเจอร์สินค้า</strong>
+              <ul id="featureList"></ul>
+            </div>
 
             <label>
               รายละเอียดเซิร์ฟเวอร์ / หมายเหตุ

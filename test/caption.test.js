@@ -8,28 +8,31 @@ import {
 } from "../src/caption.js";
 
 test("buildCaptionPrompt includes required three styles", () => {
-  const prompt = buildCaptionPrompt("HUD Script", "590 บาท");
+  const prompt = buildCaptionPrompt("sundown_deleteobj", "1,200 บาท");
 
   assert.match(prompt, /Direct:/);
   assert.match(prompt, /Minimal:/);
   assert.match(prompt, /Gen-Z:/);
-  assert.match(prompt, /HUD Script/);
-  assert.match(prompt, /590 บาท/);
+  assert.match(prompt, /sundown_deleteobj/);
+  assert.match(prompt, /1,200 บาท/);
 });
 
 test("parseCaptionArgs reads script and price", () => {
-  assert.deepEqual(parseCaptionArgs(["--script", "HUD Script", "--price", "590 บาท"]), {
-    script: "HUD Script",
-    price: "590 บาท",
-  });
+  assert.deepEqual(
+    parseCaptionArgs(["--script", "sundown_deleteobj", "--price", "1,200 บาท"]),
+    {
+      script: "sundown_deleteobj",
+      price: "1,200 บาท",
+    },
+  );
 });
 
 test("generateCaptions uses injected text generator", async () => {
   const result = await generateCaptions({
-    script: "HUD Script",
-    price: "590 บาท",
+    script: "sundown_deleteobj",
+    price: "1,200 บาท",
     textGenerator: async ({ prompt }) => {
-      assert.match(prompt, /HUD Script/);
+      assert.match(prompt, /sundown_deleteobj/);
       return "Direct: test\n\nMinimal: test\n\nGen-Z: test";
     },
   });

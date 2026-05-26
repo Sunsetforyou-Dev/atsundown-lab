@@ -25,8 +25,8 @@ test("cosineSimilarity scores identical vectors highest", () => {
 
 test("embedding formatters add document and query prefixes", () => {
   assert.equal(
-    formatDocumentForEmbedding("HUD Script"),
-    "title: AtSundown KB | text: HUD Script",
+    formatDocumentForEmbedding("sundown_deleteobj"),
+    "title: AtSundown KB | text: sundown_deleteobj",
   );
   assert.equal(
     formatQueryForEmbedding("ราคาเท่าไหร่"),
@@ -37,7 +37,7 @@ test("embedding formatters add document and query prefixes", () => {
 test("RAGEngine search returns nearest chunks", async () => {
   const embeddedInputs = [];
   const engine = new RAGEngine({
-    chunks: ["HUD Script price 590 THB", "Gang Activity price 1590 THB"],
+    chunks: ["sundown_deleteobj price 1200 THB", "sundown_discordjob price 500 THB"],
     embeddings: [
       [1, 0],
       [0, 1],
@@ -48,11 +48,11 @@ test("RAGEngine search returns nearest chunks", async () => {
     },
   });
 
-  assert.deepEqual(await engine.search("HUD price", 1), [
-    "HUD Script price 590 THB",
+  assert.deepEqual(await engine.search("deleteobj price", 1), [
+    "sundown_deleteobj price 1200 THB",
   ]);
   assert.equal(
     embeddedInputs[0],
-    "task: question answering | query: HUD price",
+    "task: question answering | query: deleteobj price",
   );
 });

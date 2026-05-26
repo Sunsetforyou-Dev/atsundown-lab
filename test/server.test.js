@@ -8,26 +8,35 @@ import { createApp } from "../src/server.js";
 function createTestApp() {
   return createApp({
     ragLoader: async () => ({
-      search: async () => ["HUD Script ราคา 590 บาท"],
+      search: async () => ["sundown_deleteobj ราคา 1,200 บาท"],
     }),
-    textGenerator: async ({ prompt }) => `answer from ${prompt.includes("HUD Script")}`,
+    textGenerator: async ({ prompt }) =>
+      `answer from ${prompt.includes("sundown_deleteobj")}`,
     orderLogger: async ({ input }) => ({
       timestamp: "2026-05-26 12:00:00",
       order: {
         discord: input.discord,
         script: input.script,
-        price: 590,
+        price: 1200,
         status: "new",
       },
     }),
   });
 }
 
-test("GET /api/scripts returns four scripts", async () => {
+test("GET /api/scripts returns three products with feature metadata", async () => {
   const app = await createTestApp();
   const response = await request(app).get("/api/scripts").expect(200);
 
-  assert.equal(response.body.scripts.length, 4);
+  assert.equal(response.body.scripts.length, 3);
+  assert.deepEqual(Object.keys(response.body.scripts[0]).sort(), [
+    "description",
+    "features",
+    "name",
+    "price",
+  ]);
+  assert.equal(response.body.scripts[0].name, "sundown_syncobject");
+  assert.ok(response.body.scripts[0].features.length > 0);
 });
 
 test("POST /api/chat hides raw provider errors", async () => {
@@ -51,7 +60,7 @@ test("POST /api/chat returns mocked answer", async () => {
   const app = await createTestApp();
   const response = await request(app)
     .post("/api/chat")
-    .send({ message: "HUD ราคาเท่าไหร่" })
+    .send({ message: "sundown_deleteobj ทำอะไรได้บ้าง" })
     .expect(200);
 
   assert.equal(response.body.answer, "answer from true");
@@ -63,13 +72,14 @@ test("POST /api/orders returns created order", async () => {
     .post("/api/orders")
     .send({
       discord: "demo#1234",
-      script: "HUD Script",
+      script: "sundown_deleteobj",
       details: "ESX",
     })
     .expect(201);
 
   assert.equal(response.body.timestamp, "2026-05-26 12:00:00");
-  assert.equal(response.body.order.script, "HUD Script");
+  assert.equal(response.body.order.script, "sundown_deleteobj");
+  assert.equal(response.body.order.price, 1200);
 });
 
 test("POST /api/chat rejects empty message", async () => {
