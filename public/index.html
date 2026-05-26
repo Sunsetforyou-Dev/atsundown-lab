@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AtSundown For FiveM</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">AtSundown For FiveM</p>
+          <h1>ผู้ช่วยสั่งซื้อสคริปต์สำเร็จรูป</h1>
+        </div>
+        <div class="status-pill" id="serverStatus">Checking</div>
+      </header>
+
+      <section class="workspace" aria-label="AtSundown assistant">
+        <div class="panel chat-panel">
+          <div class="panel-header">
+            <h2>แชตถามข้อมูล</h2>
+          </div>
+          <div class="messages" id="messages" aria-live="polite"></div>
+          <form class="chat-form" id="chatForm">
+            <input
+              id="chatInput"
+              name="message"
+              autocomplete="off"
+              placeholder="ถามเรื่องสคริปต์ FiveM, ราคา, การสั่งซื้อ หรือการติดต่อร้าน..."
+              required
+            />
+            <button type="submit">ส่ง</button>
+          </form>
+        </div>
+
+        <div class="panel order-panel">
+          <div class="panel-header">
+            <h2>สั่งซื้อสคริปต์</h2>
+          </div>
+          <form id="orderForm" class="order-form">
+            <label>
+              Discord สำหรับติดต่อกลับ
+              <input id="discord" name="discord" autocomplete="username" required />
+            </label>
+
+            <label>
+              สคริปต์ที่ต้องการซื้อ
+              <select id="script" name="script" required></select>
+            </label>
+
+            <div class="price-box" id="priceBox">ราคา: -</div>
+
+            <label>
+              รายละเอียดเซิร์ฟเวอร์ / หมายเหตุ
+              <textarea
+                id="details"
+                name="details"
+                rows="8"
+                placeholder="เช่น framework ที่ใช้ (ESX/QBCore), version server, dependency ที่มีอยู่ หรือเวลาที่สะดวกให้แอดมินติดต่อกลับ"
+                required
+              ></textarea>
+            </label>
+
+            <button type="submit" class="order-button">ส่งออเดอร์ให้แอดมิน</button>
+            <div class="form-status" id="orderStatus" role="status"></div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

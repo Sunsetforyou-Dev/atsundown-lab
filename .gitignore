@@ -1,0 +1,39 @@
+# Secrets
+.env
+.env.local
+*.pem
+
+# Service account credentials
+google-credentials.json
+service-account*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp
+
+*.log
+
+*.json
+!package.json
+!package-lock.json
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+legacy-python/

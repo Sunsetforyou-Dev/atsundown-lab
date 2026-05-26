@@ -1,0 +1,26 @@
+{
+  "name": "atsundown-lab",
+  "version": "1.0.0",
+  "description": "AtSundown FiveM order assistant on Node.js and Express.",
+  "type": "module",
+  "scripts": {
+    "agent": "node src/cli/agent.js",
+    "caption": "node src/cli/caption.js",
+    "dev": "node --watch src/server.js",
+    "morning-report": "node src/cli/morning-report.js",
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@google/genai": "^1.32.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "googleapis": "^144.0.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
